@@ -8,7 +8,7 @@ Process semi-structured data and build a datalake that provides efficient storag
 * raw layer: Datasets must have the same schema as the source, but support fast structured data reading
 * trusted layer: datamarts as required by the analysis team
 
-![Datalake](./datalake.png)
+![Datalake](./media/datalake.png)
 
 Use whatever language, storage and tools you feel comfortable to. 
 
