@@ -1,7 +1,5 @@
 # iFood Data Architect Test
 
-## Scope
-
 This is my solution to the [iFood Data Architect Test](https://github.com/ifood/ifood-data-architect-test) 
 
 > Work in progress! Solution not ready yet...

@@ -1,7 +1,5 @@
 # iFood Data Architect Test
 
-## Test Scope
-
 Process semi-structured data and build a datalake that provides efficient storage and performance. The datalake must be organized in the following 2 layers:
 * raw layer: Datasets must have the same schema as the source, but support fast structured data reading
 * trusted layer: datamarts as required by the analysis team
