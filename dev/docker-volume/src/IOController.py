@@ -17,6 +17,10 @@ def create_pyspark_session(app_name='my_app', aws_secrets:dict=aws_secrets) -> S
     config = configparser.ConfigParser()
     spark = pyspark.sql.SparkSession.builder \
                 .appName(app_name) \
+                .config("spark.memory.fraction", 0.8) \
+                .config("spark.executor.memory", "12g") \
+                .config("spark.driver.memory", "15g") \
+                .config("spark.sql.shuffle.partitions" , "800") \
                 .config('spark.sql.codegen.wholeStage', False) \
                 .getOrCreate()
 
