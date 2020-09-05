@@ -1,0 +1,11 @@
+version: '3'
+
+services: 
+    spark-dev-env:
+        build: ./spark-dev-env
+        stdin_open: true
+        tty: true
+        ports:
+            - "8888:8888"
+        volumes:
+            - ./spark-dev-env/docker-img-volume:/home/jovyan
