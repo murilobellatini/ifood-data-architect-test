@@ -11,6 +11,8 @@ def create_pyspark_session(app_name='my_app', aws_secrets:dict=aws_secrets) -> S
     """
     Returns configured PySparkSession. 
     """
+    print('Starting PySpark session. Check your terminal for detailed logging...')
+
     findspark.init()
     config = configparser.ConfigParser()
     spark = pyspark.sql.SparkSession.builder \
@@ -25,10 +27,11 @@ def create_pyspark_session(app_name='my_app', aws_secrets:dict=aws_secrets) -> S
     hadoop_conf.set("fs.s3n.awsAccessKeyId", aws_secrets.get('PUBLIC_KEY'))
     hadoop_conf.set("fs.s3n.awsSecretAccessKey", aws_secrets.get('SECRET_KEY'))
 
+    print(f'PySpark session sucessfully created.')
+
     return spark
 
 def ingest_data(s3_paths:list, spark:SparkSession, target_data_path:pl.Path=RAW_DATA_PATH) -> list:
-
     """
     Downloads data to `target_data_path` based on list of strings `s3_paths`.
     List of PySpark.DataFrame is returned with loaded data.
