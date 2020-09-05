@@ -18,7 +18,7 @@ def create_pyspark_session(app_name='my_app', aws_secrets:dict=aws_secrets) -> S
                 .config('spark.sql.codegen.wholeStage', False) \
                 .getOrCreate()
 
-    # setups AWS S3 connection 
+    # configures AWS S3 connection 
     sc=spark.sparkContext
     hadoop_conf=sc._jsc.hadoopConfiguration()
     hadoop_conf.set("fs.s3n.impl", "org.apache.hadoop.fs.s3native.NativeS3FileSystem")
