@@ -37,4 +37,4 @@ Please find the code challenge [here](./TestScope.md).
 ## References
 
 * [Medium Article | Running PySpark on Jupyter Notebook with Docker](https://medium.com/@suci/running-pyspark-on-jupyter-notebook-with-docker-602b18ac4494)
-* [Reading Files from S3 Bucket to PySpark Dataframe Boto3](https://stackoverflow.com/questions/50570381/reading-files-from-s3-bucket-to-pyspark-dataframe-boto3)
+* [How to read JSON files from S3 using PySpark and the Jupyter notebook](https://medium.com/@bogdan.cojocar/how-to-read-json-files-from-s3-using-pyspark-and-the-jupyter-notebook-275dcb27e124)
