@@ -13,7 +13,7 @@ This is my solution for this [test](https://github.com/ifood/ifood-data-architec
 
 ### Step-by-step
 
-* Place your AWS Credentials into `/spark-dev-env/docker-img-volume/.aws/secrets.json` according the following format:
+* Place your AWS Credentials into `/dev/docker-volume/.aws/secrets.json` according the following format:
 
 ```json
 {
