@@ -9,3 +9,5 @@ services:
             - "8888:8888"
         volumes:
             - ./spark-dev-env/docker-img-volume:/home/jovyan
+        environment:
+            - PYSPARK_SUBMIT_ARGS=--packages=org.apache.hadoop:hadoop-aws:2.7.3 pyspark-shell

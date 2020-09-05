@@ -1,13 +1,11 @@
 FROM jupyter/pyspark-notebook
 
-# RUN mkdir /usr/src
+COPY ./. /home/jovyan
 
-# WORKDIR /usr/src
+RUN ls
 
-COPY ./. /usr/src
+RUN pip install -r requirements.txt
 
-RUN pip install -r /usr/src/requirements.txt
-
-RUN pwd
+RUN ls
 
 EXPOSE 8888
