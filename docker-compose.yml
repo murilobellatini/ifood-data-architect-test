@@ -8,4 +8,4 @@ services:
         ports:
             - "8888:8888"
         volumes:
-            - ./spark-dev-env/notebooks:/home/jovyan
+            - ./spark-dev-env/docker-img-volume:/home/jovyan
