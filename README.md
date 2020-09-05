@@ -1,6 +1,6 @@
 # iFood Data Architect Test
 
-This is my solution to the [iFood Data Architect Test](https://github.com/ifood/ifood-data-architect-test) 
+This is my solution for this [test](https://github.com/ifood/ifood-data-architect-test) 
 
 > Work in progress! Solution not ready yet...
 
@@ -13,7 +13,7 @@ This is my solution to the [iFood Data Architect Test](https://github.com/ifood/
 
 ### Step-by-step
 
-* Run docker-compose at root directory
+* Run `docker-compose` at root directory
 
 ```bash
 docker-compose up --build
