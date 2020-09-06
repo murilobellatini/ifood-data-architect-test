@@ -28,6 +28,8 @@ This is my solution for this [test](https://github.com/ifood/ifood-data-architec
 docker-compose up --build
 ```
 
+* Access `http://localhost:8888` at your browser
+
 * Run [notebooks](./spark-dev-env/docker-img-volume/notebooks) as you wish.
 
 ## Test Scope
