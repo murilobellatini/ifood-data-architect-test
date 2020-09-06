@@ -1,8 +1,8 @@
 from src.config import TRUSTED_DATA_PATH
+from pyspark.sql import Window
 from pyspark.sql.dataframe import DataFrame
-from pyspark.sql.functions import from_json
-from pyspark.sql.functions import explode, flatten, col
 from pyspark.sql.types import ArrayType, StructField, StructType, StringType, FloatType
+from pyspark.sql.functions import from_json, explode, flatten, col, rank, col, monotonically_increasing_id, desc
 
 
 def explore_dataframe(df:DataFrame):
@@ -71,3 +71,17 @@ def create_order_items(df:DataFrame):
     print(f'Dataset sucessfully exported to `{output_path}`!')
 
     return tmp
+
+def extract_latest_values(df:DataFrame, id_col:str, dt_col:str):
+    """
+    Returns DataFrame after dropping duplicates of column `id_col` and
+    keeping the lastest value based on timestamp column `dt_col`
+    """
+
+    window = Window.partitionBy(id_col).orderBy(desc(dt_col),'tiebreak')
+
+    df = df.withColumn('tiebreak', monotonically_increasing_id()) \
+           .withColumn('rank', rank().over(window)) \
+           .filter(col('rank') == 1).drop('rank','tiebreak')
+
+    return df
