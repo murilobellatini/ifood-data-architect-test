@@ -7,7 +7,7 @@ from src.config import aws_secrets, RAW_DATA_PATH
 from pyspark.sql import SparkSession
 
 
-def create_pyspark_session(app_name='my_app', aws_secrets:dict=aws_secrets) -> SparkSession:
+def create_pyspark_session(app_name:str='my_app', aws_secrets:dict=aws_secrets) -> SparkSession:
     """
     Returns configured PySparkSession. 
     """

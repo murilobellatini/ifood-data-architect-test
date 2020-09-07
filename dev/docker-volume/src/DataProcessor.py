@@ -31,7 +31,7 @@ def create_trusted_status(spark:SparkSession) -> DataFrame:
     return df
 
 
-def create_trusted_order(spark:SparkSession):
+def create_trusted_order(spark:SparkSession) -> DataFrame:
     """
     Creates requested Order dataset for Datamart
     """
