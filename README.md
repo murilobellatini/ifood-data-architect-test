@@ -30,7 +30,10 @@ docker-compose up --build
 
 * Access `http://localhost:8888` at your browser
 
-* Run [notebooks](./spark-dev-env/docker-img-volume/notebooks) as you wish.
+* Then decide to run production script or developement notebooks:
+
+1. `Production`: Open terminal window within Jupyter Notebook and run `python main.py`.
+2. `Development`: Run [notebooks](./spark-dev-env/docker-img-volume/notebooks).
 
 ## Test Scope
 
