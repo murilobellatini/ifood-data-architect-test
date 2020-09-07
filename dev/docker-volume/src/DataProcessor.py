@@ -7,7 +7,35 @@ from pyspark.sql.types import ArrayType, StructField, StructType, StringType, Fl
 from pyspark.sql.functions import from_json, explode, flatten, col, rank, col, monotonically_increasing_id, desc
 
 
+def create_trusted_status(spark:SparkSession):
+    """
+    Creates requested Status dataset for Datamart
+    """
+
+    print('Starting processing to generate Status dataset...')
+
+    df = spark.read.parquet(str(RAW_DATA_PATH / 'status'))
+
+    df = df.dropDuplicates().groupBy("order_id").agg(
+        F.map_from_entries(
+            F.collect_list(
+                F.struct("value", "created_at"))).alias("status_created_at")
+    )
+
+    print(f'Exporting dataset to file system...')
+
+    output_path = TRUSTED_DATA_PATH / 'order'
+    # tmp.write.parquet(str(output_path))
+
+    print(f'Dataset sucessfully exported to `{output_path}`!')
+
+    return df
+
+
 def create_trusted_order(spark:SparkSession):
+    """
+    Creates requested Order dataset for Datamart
+    """
 
     print('Starting processing to generate Order Items dataset...')
 
@@ -43,7 +71,7 @@ def create_trusted_order(spark:SparkSession):
     
 def create_trusted_order_items(spark:SparkSession):
     """
-    Creates requested Order Items table based on raw Orders `df`.
+    Creates requested Order Items dataset for Datamart
     """
 
     print('Starting processing to generate Order Items dataset...')
@@ -89,7 +117,7 @@ def explore_dataframe(df:DataFrame):
 
 def fix_dataframe_dtypes(df:DataFrame, dtypes:dict):
     """
-    Return  DataFrame `df` with corrected schema based on dtypes
+    Returns DataFrame `df` with corrected schema based on dtypes
     """
     for dtype, cols in dtypes.items():
         for col in cols:
@@ -98,6 +126,9 @@ def fix_dataframe_dtypes(df:DataFrame, dtypes:dict):
     return df
 
 def fix_order_dtypes(df:DataFrame):
+    """
+    Adjusts data types of Order dataset (data validation)
+    """
 
     dtypes = {
         'float': [
@@ -142,6 +173,9 @@ def load_sanitized_dataframe(table:str, spark:SparkSession):
     return df
 
 def add_prefix(df:DataFrame, prefix:str, skip_ids:bool=True):
+    """
+    Adds prefix to every columns on `df` except `id` for better consistency.
+    """
 
     for col in df.columns:
 
