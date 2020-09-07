@@ -1,4 +1,5 @@
 from pyspark.sql import Window
+import pyspark.sql.functions as F
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.session import SparkSession
 from src.config import TRUSTED_DATA_PATH, RAW_DATA_PATH
@@ -6,38 +7,40 @@ from pyspark.sql.types import ArrayType, StructField, StructType, StringType, Fl
 from pyspark.sql.functions import from_json, explode, flatten, col, rank, col, monotonically_increasing_id, desc
 
 
-def explore_dataframe(df:DataFrame):
-    """
-    Checks shape and schema of DataFrame
-    """
-    print('(#rows, #columns) =', (df.count(), len(df.columns)))
-    return df.printSchema()
+def create_trusted_order(spark:SparkSession):
 
-def fix_dataframe_dtypes(df:DataFrame, dtypes:dict):
-    """
-    Return  DataFrame `df` with corrected schema based on dtypes
-    """
-    for dtype, cols in dtypes.items():
-        for col in cols:
-            df = df.withColumn(col, df[col].cast(dtype))
+    print('Starting processing to generate Order Items dataset...')
 
-    return df
+    o_df = load_sanitized_dataframe('order', spark)
+    c_df = load_sanitized_dataframe('consumer', spark)
+    r_df = load_sanitized_dataframe('restaurant', spark)
+    s_df = load_sanitized_dataframe('status', spark)
 
-def fix_order_dtypes(df:DataFrame):
+    tmp = (o_df
+        .join(c_df, on='customer_id', how='left')
+        .join(r_df, on='merchant_id', how='left')
+        .join(s_df, on='order_id', how='left')
+        .dropDuplicates()
+        )
 
-    dtypes = {
-        'float': [
-            'order_delivery_address_latitude', 'order_delivery_address_longitude', 'order_merchant_latitude',
-            'order_merchant_longitude', 'order_order_total_amount', 'restaurant_price_range',
-            'restaurant_average_ticket', 'restaurant_takeout_time', 'restaurant_delivery_time'],
-        'bigint': [
-            'order_delivery_address_zip_code', 'restaurant_merchant_zip_code'
-        ]}
+    print(f'Exporting dataset to file system...')
 
-    df = fix_schema(df, dtypes)
+    output_path = TRUSTED_DATA_PATH / 'order'
+
+    # anonymize sensitive data by dropping columns
+    sensitive_data_columns = ['order_cpf', 'order_customer_name', 'consumer_customer_name', 'consumer_customer_phone_number']
+    tmp = tmp.drop(*sensitive_data_columns)
+
+    # fix dataset data types
+    tmp = fix_order_dtypes(tmp)
+
+    # exports data partinioned by merchant's time at order creation
+    tmp.write.partitionBy('order_order_created_at').parquet(str(output_path))
+
+    print(f'Dataset sucessfully exported to `{output_path}`!')
+
+    return tmp
     
-    return df
-
 def create_trusted_order_items(spark:SparkSession):
     """
     Creates requested Order Items table based on raw Orders `df`.
@@ -77,6 +80,38 @@ def create_trusted_order_items(spark:SparkSession):
 
     return tmp
 
+def explore_dataframe(df:DataFrame):
+    """
+    Checks shape and schema of DataFrame
+    """
+    print('(#rows, #columns) =', (df.count(), len(df.columns)))
+    return df.printSchema()
+
+def fix_dataframe_dtypes(df:DataFrame, dtypes:dict):
+    """
+    Return  DataFrame `df` with corrected schema based on dtypes
+    """
+    for dtype, cols in dtypes.items():
+        for col in cols:
+            df = df.withColumn(col, df[col].cast(dtype))
+
+    return df
+
+def fix_order_dtypes(df:DataFrame):
+
+    dtypes = {
+        'float': [
+            'order_delivery_address_latitude', 'order_delivery_address_longitude', 'order_merchant_latitude',
+            'order_merchant_longitude', 'order_order_total_amount', 'restaurant_price_range',
+            'restaurant_average_ticket', 'restaurant_takeout_time', 'restaurant_delivery_time'],
+        'bigint': [
+            'order_delivery_address_zip_code', 'restaurant_merchant_zip_code'
+        ]}
+
+    df = fix_schema(df, dtypes)
+    
+    return df
+
 def extract_latest_values(df:DataFrame, id_col:str, dt_col:str):
     """
     Returns DataFrame after dropping duplicates of column `id_col` and
@@ -105,40 +140,6 @@ def load_sanitized_dataframe(table:str, spark:SparkSession):
         df = extract_latest_values(df=df, id_col='order_id', dt_col='status_created_at')
         
     return df
-
-def create_trusted_order(spark:SparkSession):
-
-    print('Starting processing to generate Order Items dataset...')
-
-    o_df = load_sanitized_dataframe('order', spark)
-    c_df = load_sanitized_dataframe('consumer', spark)
-    r_df = load_sanitized_dataframe('restaurant', spark)
-    s_df = load_sanitized_dataframe('status', spark)
-
-    tmp = (o_df
-        .join(c_df, on='customer_id', how='left')
-        .join(r_df, on='merchant_id', how='left')
-        .join(s_df, on='order_id', how='left')
-        .dropDuplicates()
-        )
-
-    print(f'Exporting dataset to file system...')
-
-    output_path = TRUSTED_DATA_PATH / 'order'
-
-    # anonymize sensitive data by dropping columns
-    sensitive_data_columns = ['order_cpf', 'order_customer_name', 'consumer_customer_name', 'consumer_customer_phone_number']
-    tmp = tmp.drop(*sensitive_data_columns)
-
-    # fix dataset data types
-    tmp = fix_order_dtypes(tmp)
-
-    # exports data partinioned by merchant's time at order creation
-    tmp.write.partitionBy('order_order_created_at').parquet(str(output_path))
-
-    print(f'Dataset sucessfully exported to `{output_path}`!')
-
-    return tmp
 
 def add_prefix(df:DataFrame, prefix:str, skip_ids:bool=True):
 
