@@ -4,7 +4,7 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.session import SparkSession
 from src.config import TRUSTED_DATA_PATH, RAW_DATA_PATH
 from pyspark.sql.types import ArrayType, StructField, StructType, StringType, FloatType
-from pyspark.sql.functions import from_json, explode, flatten, col, rank, col, monotonically_increasing_id, desc
+from pyspark.sql.functions import from_json, explode, flatten, col, rank, col, monotonically_increasing_id, desc, first
 
 
 def create_trusted_status(spark:SparkSession) -> DataFrame:
@@ -16,16 +16,15 @@ def create_trusted_status(spark:SparkSession) -> DataFrame:
 
     df = spark.read.parquet(str(RAW_DATA_PATH / 'status'))
 
-    df = df.dropDuplicates().groupBy("order_id").agg(
-        F.map_from_entries(
-            F.collect_list(
-                F.struct("value", "created_at"))).alias("status_created_at")
-    )
+    df = df.dropDuplicates()\
+           .groupBy("order_id")\
+           .pivot("value")\
+           .agg(first("created_at"))
 
     print(f'Exporting dataset to file system...')
 
     output_path = TRUSTED_DATA_PATH / 'order'
-    # tmp.write.parquet(str(output_path))
+    tmp.write.parquet(str(output_path))
 
     print(f'Dataset sucessfully exported to `{output_path}`!')
 
