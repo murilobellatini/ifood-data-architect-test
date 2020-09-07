@@ -9,6 +9,13 @@ The solution is split into two parts:
 
 The raw data had some duplicated values which I've decided to drop after having a look into some of them and understanding it was safe to do so. Data validation was accomplished by casting data types after manually understanding each present column. For cases when I was unsure, the data was left as string in order to avoid possible crashes. Regarding anonymization I've just dropped all sensitive data columns since their owners, customers and merchants, can be identified via their unique ids anyways.
 
+Regarding data persistency, all storage is done on the mapped docker-compose volume. In this case locally at the relative path `./dev/docker-volume` inside the directory where the repo was cloned to - see below. Ideally data should be made avaiable at a shared storage file system, so multiple teams could have access to it. For simplicity purpouses it's left like stated here.
+
+```yml
+volumes:
+    - ./dev/docker-volume:/home/jovyan
+```
+
 The complete solution was run on my local laptop, that's why the Spark session has modest configurations. But once the final application script gets deployed to a proper development environment, such as suggested Databricks, it should scale accordingly.
 
 ## How to Run

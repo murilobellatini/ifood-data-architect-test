@@ -1,13 +1,12 @@
 from pyspark.sql import Window
-import pyspark.sql.functions as F
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.session import SparkSession
 from src.config import TRUSTED_DATA_PATH, RAW_DATA_PATH
 from pyspark.sql.types import ArrayType, StructField, StructType, StringType, FloatType
-from pyspark.sql.functions import from_json, explode, flatten, col, rank, col, monotonically_increasing_id, desc
+from pyspark.sql.functions import from_json, explode, flatten, col, rank, col, monotonically_increasing_id, desc, first
 
 
-def create_trusted_status(spark:SparkSession):
+def create_trusted_status(spark:SparkSession) -> DataFrame:
     """
     Creates requested Status dataset for Datamart
     """
@@ -16,23 +15,22 @@ def create_trusted_status(spark:SparkSession):
 
     df = spark.read.parquet(str(RAW_DATA_PATH / 'status'))
 
-    df = df.dropDuplicates().groupBy("order_id").agg(
-        F.map_from_entries(
-            F.collect_list(
-                F.struct("value", "created_at"))).alias("status_created_at")
-    )
+    df = df.dropDuplicates()\
+           .groupBy("order_id")\
+           .pivot("value")\
+           .agg(first("created_at"))
 
     print(f'Exporting dataset to file system...')
 
     output_path = TRUSTED_DATA_PATH / 'order'
-    # tmp.write.parquet(str(output_path))
+    tmp.write.parquet(str(output_path))
 
     print(f'Dataset sucessfully exported to `{output_path}`!')
 
     return df
 
 
-def create_trusted_order(spark:SparkSession):
+def create_trusted_order(spark:SparkSession) -> DataFrame:
     """
     Creates requested Order dataset for Datamart
     """
@@ -69,7 +67,7 @@ def create_trusted_order(spark:SparkSession):
 
     return tmp
     
-def create_trusted_order_items(spark:SparkSession):
+def create_trusted_order_items(spark:SparkSession) -> DataFrame:
     """
     Creates requested Order Items dataset for Datamart
     """
@@ -108,14 +106,14 @@ def create_trusted_order_items(spark:SparkSession):
 
     return tmp
 
-def explore_dataframe(df:DataFrame):
+def explore_dataframe(df:DataFrame) -> None:
     """
     Checks shape and schema of DataFrame
     """
     print('(#rows, #columns) =', (df.count(), len(df.columns)))
     return df.printSchema()
 
-def fix_dataframe_dtypes(df:DataFrame, dtypes:dict):
+def fix_dataframe_dtypes(df:DataFrame, dtypes:dict) -> DataFrame:
     """
     Returns DataFrame `df` with corrected schema based on dtypes
     """
@@ -125,7 +123,7 @@ def fix_dataframe_dtypes(df:DataFrame, dtypes:dict):
 
     return df
 
-def fix_order_dtypes(df:DataFrame):
+def fix_order_dtypes(df:DataFrame) -> DataFrame:
     """
     Adjusts data types of Order dataset (data validation)
     """
@@ -143,7 +141,7 @@ def fix_order_dtypes(df:DataFrame):
     
     return df
 
-def extract_latest_values(df:DataFrame, id_col:str, dt_col:str):
+def extract_latest_values(df:DataFrame, id_col:str, dt_col:str) -> DataFrame:
     """
     Returns DataFrame after dropping duplicates of column `id_col` and
     keeping the lastest value based on timestamp column `dt_col`
@@ -157,7 +155,7 @@ def extract_latest_values(df:DataFrame, id_col:str, dt_col:str):
 
     return df
 
-def load_sanitized_dataframe(table:str, spark:SparkSession):
+def load_sanitized_dataframe(table:str, spark:SparkSession) -> DataFrame:
     """
     Loads DataFrame into standard for produced joind datamart dataset `Order`.
     """
@@ -172,7 +170,7 @@ def load_sanitized_dataframe(table:str, spark:SparkSession):
         
     return df
 
-def add_prefix(df:DataFrame, prefix:str, skip_ids:bool=True):
+def add_prefix(df:DataFrame, prefix:str, skip_ids:bool=True) -> DataFrame:
     """
     Adds prefix to every columns on `df` except `id` for better consistency.
     """
