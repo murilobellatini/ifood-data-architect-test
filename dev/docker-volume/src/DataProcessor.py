@@ -123,7 +123,7 @@ def create_trusted_order(spark:SparkSession):
     output_path = TRUSTED_DATA_PATH / 'order'
 
     # anonymize sensitive data by dropping columns
-    sensitive_data_columns = ['cpf', 'customer_name', 'consumer_customer_name', 'consumer_customer_phone_number']
+    sensitive_data_columns = ['order_cpf', 'order_customer_name', 'consumer_customer_name', 'consumer_customer_phone_number']
     tmp = tmp.drop(*sensitive_data_columns)
 
     tmp.write.parquet(str(output_path))
