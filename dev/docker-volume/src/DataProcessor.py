@@ -1,5 +1,4 @@
 from pyspark.sql import Window
-import pyspark.sql.functions as F
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.session import SparkSession
 from src.config import TRUSTED_DATA_PATH, RAW_DATA_PATH
