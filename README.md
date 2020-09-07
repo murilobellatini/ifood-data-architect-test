@@ -27,7 +27,7 @@ The complete solution was run on my local laptop, that's why the Spark session h
 
 ### Step-by-step
 
-* Place your AWS Credentials into `/dev/docker-volume/.aws/secrets.json` according the following format:
+* Place your AWS Credentials into `./dev/docker-volume/.aws/secrets.json` according the following format:
 
 ```json
 {
