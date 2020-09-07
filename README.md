@@ -1,13 +1,13 @@
 # iFood Data Architect Test
 
-This is my solution for the [iFood Test](https://github.com/ifood/ifood-data-architect-test), where the proposal was to create a prototype datalake and datamart from `json` and `csv` files. A raw and trusted layer where required. My solution basically runs locally inside a docker container with `Pyspark` and all further necessary requirements. It gets the data ingested, wrangled, processed and finally exported as `parquet` files. Partitioning was done based on test requirements.
+This is my solution for the [iFood Test](https://github.com/ifood/ifood-data-architect-test), whose proposal is to create a prototype datalake from `json` and `csv` files. Raw and trusted layers where required. My solution runs locally inside a docker container with `Pyspark` and all further necessary dependencies. It gets the data ingested, wrangled, processed and finally exported as `parquet` files. Partitioning was done based on test requirements.
 
-The solution is split in two parts:
+The solution is split into two parts:
 
-1. `Development`: I was done Jupyter Notebooks and a walkthrough and can be found [here](./dev/docker-volume/notebooks).
+1. `Development`: Jupyter Notebooks with a development walkthrough can be found [here](./dev/docker-volume/notebooks).
 2. `Final script`: `main.py` can be found here [here](./dev/docker-volume/main.py)
 
-The raw data had some duplicated values which I've decided to drop after having a look into some of them and understanding it was safe to be done. Data validation was done by casting the types after manually understanding each dataset column. For columns where I was unsure, the data was just left as string for avoiding crashes. Regarding anonymization I've just dropped the sensitive data columns since their owners, customers and merchants, can be identified via their unique ids.
+The raw data had some duplicated values which I've decided to drop after having a look into some of them and understanding it was safe to do so. Data validation was accomplished by casting data types after manually understanding each present column. For cases when I was unsure, the data was left as string in order to avoid possible crashes. Regarding anonymization I've just dropped all sensitive data columns since their owners, customers and merchants, can be identified via their unique ids anyways.
 
 The complete solution was run on my local laptop, that's why the Spark session has modest configurations. But once the final application script gets deployed to a proper development environment, such as suggested Databricks, it should scale accordingly.
 
@@ -76,4 +76,4 @@ Please find the code challenge [here](./TestScope.md).
     │
     ├── docker-compose.yml          <- Docker-compose file for runing docker containers with environemnt specs. 
     │
-    └── TestScope.md                <- Clone of original TestScope in case original repo gets deleted.
+    └── TestScope.md                <- Clone of original test scope in case the original repo gets deleted.
