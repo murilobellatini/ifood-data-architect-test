@@ -1,13 +1,13 @@
 # iFood Data Architect Test
 
-This is my solution for the [iFood Test](https://github.com/ifood/ifood-data-architect-test), where the proposal was to create a prototype datalake and datamart from from `json` and `csv` files. A raw and trusted layer where required. My solution basically runs locally inside a docker container with `Pyspark` and all further necessary requirements. It gets the data ingested, wrangled, processed and finally exported as `parquet` files. Partitioning was done based on test requirements.
+This is my solution for the [iFood Test](https://github.com/ifood/ifood-data-architect-test), where the proposal was to create a prototype datalake and datamart from `json` and `csv` files. A raw and trusted layer where required. My solution basically runs locally inside a docker container with `Pyspark` and all further necessary requirements. It gets the data ingested, wrangled, processed and finally exported as `parquet` files. Partitioning was done based on test requirements.
 
 The solution is split in two parts:
 
 1. `Development`: I was done Jupyter Notebooks and a walkthrough and can be found [here](./dev/docker-volume/notebooks).
 2. `Final script`: `main.py` can be found here [here](./dev/docker-volume/main.py)
 
-The raw data had some duplicate values which I've decided to drop after having a look into some of them and it seemed safe. Data validation was done by casting the types after manually understanding each dataset column. For columns where I was unsure, the data was just left as string for avoiding crashes. Regarding anonymization I've just dropped the sensitive data columns since their owners, customers and merchants, can be identified via their unique ids.
+The raw data had some duplicated values which I've decided to drop after having a look into some of them and understanding it was safe to be done. Data validation was done by casting the types after manually understanding each dataset column. For columns where I was unsure, the data was just left as string for avoiding crashes. Regarding anonymization I've just dropped the sensitive data columns since their owners, customers and merchants, can be identified via their unique ids.
 
 The complete solution was run on my local laptop, that's why the Spark session has modest configurations. But once the final application script gets deployed to a proper development environment, such as suggested Databricks, it should scale accordingly.
 
