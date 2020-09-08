@@ -70,7 +70,7 @@ Please find the code challenge [here](./TestScope.md).
     ├── dev                         <- Development folder where  application scripts are stored.
     │   ├── docker-volume           <- Shared volume with docker container.
     │   │   ├── credentials         <- Folder for storing credentials, only one required so far is AWS account.
-    │   │   ├── data                <- Data for file system, here is here raw and trusted layers shall reside.
+    │   │   ├── data                <- Data for file system, here is where raw and trusted layers shall reside.
     │   │   ├── notebooks           <- Development notebooks to have a walkthrough of development phase.
     │   │   ├── src                 <- Custom library for storing required code.
     │   │   └── main.py             <- Main application to run full pipeline from single script.
