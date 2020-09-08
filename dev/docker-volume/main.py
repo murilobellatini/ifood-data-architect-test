@@ -10,7 +10,7 @@ raw_data_s3_paths = [
 
 if __name__ == "__main__":
     spark = create_pyspark_session()
-    ingest_data(s3_paths, spark)
+    ingest_data(raw_data_s3_paths, spark)
     create_trusted_order(spark)
     create_trusted_order_items(spark)
     create_trusted_status(spark)
