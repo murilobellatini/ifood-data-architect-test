@@ -58,8 +58,8 @@ def ingest_data(s3_paths:list, spark:SparkSession, target_data_path:pl.Path=RAW_
         elif s3_path.endswith('json.gz'):
             df = spark.read.json(s3_path)
         else:
-            continue
             print(f'File extension of `{s3_path}` does not correspond to readable DataFrame. Skipping file.')
+            continue
         
         df.write.parquet(str(output_path))
         
