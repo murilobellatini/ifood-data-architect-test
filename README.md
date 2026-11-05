@@ -1,5 +1,9 @@
 # iFood Data Architect Test
 
+> My solution to the iFood Data Architect test.
+> A local data lake prototype with PySpark, Jupyter and Docker.
+> Notebooks show the steps. One script runs it all.
+
 This is my solution for the [iFood Test](https://github.com/ifood/ifood-data-architect-test), whose proposal is to create a prototype datalake from `json` and `csv` files. Raw and trusted layers where required. My solution runs locally inside a docker container with `Pyspark` and all further necessary dependencies. It gets the data ingested, wrangled, processed and finally exported as `parquet` files. Partitioning was done based on test requirements.
 
 The solution is split into two parts:
